@@ -1,0 +1,101 @@
+version: '3.9'
+
+services:
+  auth:
+    build:
+      context: ./cmd/auth
+    environment:
+      - VAULT_ENABLED=true
+      - VAULT_ADDR=http://vault:8200
+      - VAULT_TOKEN=root
+      - KEYCLOAK_URL=http://keycloak:8080
+      - REALM=mono-services      
+    depends_on:
+      keycloak:
+        condition: service_healthy
+    networks:
+      - super_services_network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  user:
+    build:
+      context: ./cmd/user
+    depends_on:
+      - postgres
+    networks:
+      - super_services_network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  notification:
+    build:
+      context: ./cmd/notification
+    depends_on:
+      - nats
+      - redis
+    networks:
+      - super_services_network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  audit:
+    build:
+      context: ./cmd/audit
+    depends_on:
+      - postgres
+    networks:
+      - super_services_network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  admin:
+    build:
+      context: ./cmd/admin
+    depends_on:
+      - postgres
+    networks:
+      - super_services_network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  billing:
+    build:
+      context: ./cmd/billing
+    depends_on:
+      - postgres
+    networks:
+      - super_services_network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  search:
+    build:
+      context: ./cmd/search
+    depends_on:
+      - elasticsearch
+    networks:
+      - super_services_network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
