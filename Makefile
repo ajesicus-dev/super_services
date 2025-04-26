@@ -4,7 +4,7 @@ VAULT_ROOT_TOKEN ?= (your-root-token-here after init)
 
 # Directories and Compose Files
 COMPOSE_DIR=deployments/docker-compose
-COMPOSE_FILES=-f $(COMPOSE_DIR)/base.yml -f $(COMPOSE_DIR)/vault.yml -f $(COMPOSE_DIR)/main.yml
+COMPOSE_FILES=-f $(COMPOSE_DIR)/base.yml -f $(COMPOSE_DIR)/vault.yml -f $(COMPOSE_DIR)/services.yml -f $(COMPOSE_DIR)/main.yml
 
 
 .PHONY: build run-gateway run-auth test lint up down restart logs clean \
