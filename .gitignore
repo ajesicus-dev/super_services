@@ -1,0 +1,41 @@
+# Binaries
+*.exe
+*.dll
+*.so
+*.dylib
+*.out
+*.o
+*.a
+
+# Go build artifacts
+bin/
+*.test
+*.exe
+
+# Dependency directories
+vendor/
+
+# Logs and temporary files
+*.log
+*.tmp
+*.swp
+*.swo
+
+# IDE and editor files
+.vscode/
+.idea/
+*.iml
+
+# OS-specific files
+.DS_Store
+Thumbs.db
+
+# Docker-related files
+docker-compose.override.yml
+.env
+
+# Coverage files
+coverage.out
+
+# Generated files
+gen/

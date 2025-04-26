@@ -1,0 +1,3 @@
+networks:
+  super_services_network:
+    driver: bridge

@@ -1,0 +1,17 @@
+ignoreGeneratedHeader = true
+severity = "warning"
+confidence = 0.8
+
+[rule.exported]
+  arguments = ["comment"]
+
+[rule.blank-imports]
+  severity = "error"
+
+[rule.indent-error-flow]
+
+[rule.if-return]
+
+[rule.context-as-argument]
+
+[rule.error-return]
