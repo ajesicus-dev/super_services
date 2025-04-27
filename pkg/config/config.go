@@ -5,7 +5,7 @@ import (
 	"os"
 	"strings"
 
-	"super_services/pkg/vault"
+	"gitlab.com/ajesicus/super_services/pkg/vault"
 
 	"github.com/spf13/viper"
 )

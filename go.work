@@ -1,10 +1,13 @@
 go 1.21.4
 
 use (
-    ./cmd
-    ./pkg
-    ./internal
-    ./services/auth
-    ./services/user
-    ./services/gateway
+	./pkg
+	./services/admin
+	./services/audit
+	./services/auth
+	./services/billing
+	./services/gateway
+	./services/notification
+	./services/search
+	./services/user
 )

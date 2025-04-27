@@ -2,9 +2,11 @@ package main
 
 import (
 	"log"
+	"os"
 
-	"super_services/pkg/config"
-	"super_services/services/auth/config"
+	"gitlab.com/ajesicus/super_services/pkg/config"
+	"gitlab.com/ajesicus/super_services/services/auth/config"
+	"gitlab.com/ajesicus/super_services/services/auth/internal/api"
 )
 
 func main() {
@@ -21,4 +23,19 @@ func main() {
 	log.Printf("Auth service started with client_id: %s", cfg.OAuthClientID)
 
 	// Boot your server...
+	port := getPort()
+	r := api.NewServer()
+
+	log.Printf("Starting auth service on port %s...\n", port)
+	if err := r.Run(":" + port); err != nil {
+		log.Fatalf("server failed: %v", err)
+	}
+}
+
+func getPort() string {
+	port := os.Getenv("PORT")
+	if port == "" {
+		port = "8080"
+	}
+	return port
 }
