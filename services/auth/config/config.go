@@ -1,9 +1,7 @@
 package service
 
 import (
-	"log"
-
-	"super_services/pkg/config"
+	"gitlab.com/ajesicus/super_services/pkg/config"
 )
 
 type AuthConfig struct {
