@@ -13,6 +13,11 @@ services:
       - REALM=mono-services
       - DATABASE_URL=postgres://user:password@postgres:5432/super_services?sslmode=disable
       - REDIS_URL=redis://redis:6379
+    container_name: auth
+    ports:
+      - "8000:8000"
+    volumes:
+      - ../../services/auth:/app
     depends_on:
       postgres:
         condition: service_healthy
@@ -27,3 +32,4 @@ services:
       interval: 30s
       timeout: 10s
       retries: 3
+    command: ["air"]
