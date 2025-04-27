@@ -3,8 +3,8 @@ package main
 import (
 	"log"
 
-	"super_services/internal/auth/service"
 	"super_services/pkg/config"
+	"super_services/services/auth/config"
 )
 
 func main() {

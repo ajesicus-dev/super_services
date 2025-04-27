@@ -4,4 +4,7 @@ use (
     ./cmd
     ./pkg
     ./internal
+    ./services/auth
+    ./services/user
+    ./services/gateway
 )
