@@ -1,5 +1,3 @@
-version: '3.9'
-    
 volumes:
   vault-init-data:
   vault_data_node1:
@@ -7,7 +5,7 @@ volumes:
 
 services:
   vault-node1:
-    image: vault:1.15
+    image: hashicorp/vault:1.19
     container_name: vault-node1
     ports:
       - "8200:8200"    # API port
@@ -18,7 +16,7 @@ services:
       VAULT_RAFT_NODE_ID: vault-node1
     volumes:
       - vault_data_node1:/vault/data
-      - ./deployments/vault/config:/vault/config
+      - ./config:/vault/config
     command: server -config=/vault/config/vault-config.hcl
     cap_add:
       - IPC_LOCK
@@ -31,7 +29,7 @@ services:
       retries: 5
 
   vault-node2:
-    image: vault:1.15
+    image: hashicorp/vault:1.19
     container_name: vault-node2
     ports:
       - "8202:8200"    # API port
@@ -42,7 +40,7 @@ services:
       VAULT_RAFT_NODE_ID: vault-node2
     volumes:
       - vault_data_node2:/vault/data
-      - ./deployments/vault/config:/vault/config
+      - ./config:/vault/config
     command: server -config=/vault/config/vault-config.hcl
     cap_add:
       - IPC_LOCK
@@ -60,7 +58,7 @@ services:
     environment:
       - VAULT_NODE1_ADDR=http://vault-node1:8200
     volumes:
-      - ./scripts/vault:/scripts
+      - ./scripts:/scripts
       - vault-init-data:/vault
     entrypoint: ["/bin/sh", "/scripts/init.sh"]
     depends_on:
@@ -76,7 +74,7 @@ services:
       - VAULT_NODE1_ADDR=http://vault-node1:8200
       - VAULT_NODE2_ADDR=http://vault-node2:8200
     volumes:
-      - ./scripts/vault:/scripts
+      - ./scripts:/scripts
       - vault-init-data:/vault
     entrypoint: ["/bin/sh", "/scripts/unseal.sh"]
     depends_on:
@@ -93,7 +91,7 @@ services:
       # Optionally inject the token if you preload using it
       # - VAULT_ROOT_TOKEN=xxxxxx
     volumes:
-      - ./scripts/vault:/scripts
+      - ./scripts:/scripts
       - vault-init-data:/vault
     entrypoint: ["/bin/sh", "/scripts/preload.sh"]
     depends_on:
