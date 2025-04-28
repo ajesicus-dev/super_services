@@ -1,7 +1,7 @@
 volumes:
   vault-init-data:
-  vault_data_node1:
-  vault_data_node2:
+  vault-data-node1:
+  vault-data-node2:
 
 services:
   vault-node1:
@@ -15,8 +15,8 @@ services:
       VAULT_CLUSTER_ADDR: http://vault-node1:8201
       VAULT_RAFT_NODE_ID: vault-node1
     volumes:
-      - vault_data_node1:/vault/data
-      - ./config:/vault/config
+      - vault-data-node1:/vault/data
+      - ./deployments/vault/config:/vault/config
     command: server -config=/vault/config/vault-config.hcl
     cap_add:
       - IPC_LOCK
@@ -39,8 +39,8 @@ services:
       VAULT_CLUSTER_ADDR: http://vault-node2:8201
       VAULT_RAFT_NODE_ID: vault-node2
     volumes:
-      - vault_data_node2:/vault/data
-      - ./config:/vault/config
+      - vault-data-node2:/vault/data
+      - ./deployments/vault/config:/vault/config
     command: server -config=/vault/config/vault-config.hcl
     cap_add:
       - IPC_LOCK
@@ -55,14 +55,14 @@ services:
   vault-init:
     image: curlimages/curl:latest
     container_name: vault-init
+    depends_on:
+      - vault-node1
     environment:
       - VAULT_NODE1_ADDR=http://vault-node1:8200
     volumes:
-      - ./scripts:/scripts
+      - ./deployments/vault/scripts:/scripts
       - vault-init-data:/vault
     entrypoint: ["/bin/sh", "/scripts/init.sh"]
-    depends_on:
-      - vault-node1
     networks:
       - super_services_network
     restart: "no"
@@ -70,15 +70,15 @@ services:
   vault-unseal:
     image: curlimages/curl:latest
     container_name: vault-unseal
+    depends_on:
+      - vault-init
     environment:
       - VAULT_NODE1_ADDR=http://vault-node1:8200
       - VAULT_NODE2_ADDR=http://vault-node2:8200
     volumes:
-      - ./scripts:/scripts
+      - ./deployments/vault/scripts:/scripts
       - vault-init-data:/vault
     entrypoint: ["/bin/sh", "/scripts/unseal.sh"]
-    depends_on:
-      - vault-init
     networks:
       - super_services_network
     restart: "no"
@@ -86,16 +86,16 @@ services:
   vault-preload:
     image: curlimages/curl:latest
     container_name: vault-preload
+    depends_on:
+      - vault-unseal
     environment:
       - VAULT_NODE1_ADDR=http://vault-node1:8200
       # Optionally inject the token if you preload using it
       # - VAULT_ROOT_TOKEN=xxxxxx
     volumes:
-      - ./scripts:/scripts
+      - ./deployments/vault/scripts:/scripts
       - vault-init-data:/vault
     entrypoint: ["/bin/sh", "/scripts/preload.sh"]
-    depends_on:
-      - vault-unseal
     networks:
       - super_services_network
     restart: "no"

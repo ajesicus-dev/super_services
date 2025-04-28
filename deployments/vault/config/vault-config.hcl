@@ -1,7 +1,8 @@
 # Storage: Raft (integrated storage for production-grade setups)
 storage "raft" {
   path    = "/vault/data"
-  
+  node_id = "vault-node1"
+
   retry_join {
     leader_api_addr = "http://vault-node1:8200"
   }
