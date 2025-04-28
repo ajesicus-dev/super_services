@@ -6,50 +6,6 @@ volumes:
   redis_data:
 
 services:
-  gateway:
-    build:
-      context: ./cmd/gateway
-    ports:
-      - "8080:8080"
-    environment:
-      - JWT_SECRET=your_jwt_secret
-      - VAULT_ADDR=http://vault:8200  # <- Add Vault address if needed
-    depends_on:
-      vault: 
-        condition: service_healthy
-      auth:
-        condition: service_healthy
-      user:
-        condition: service_healthy
-      notification:
-        condition: service_healthy
-      billing:
-        condition: service_healthy
-      search:
-        condition: service_healthy
-    networks:
-      - super_services_network
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8080/health"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
-
-  keycloak:
-    image: quay.io/keycloak/keycloak:latest
-    environment:
-      - KEYCLOAK_USER=admin
-      - KEYCLOAK_PASSWORD=admin
-    ports:
-      - "8081:8080"
-    networks:
-      - super_services_network
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8080/auth/realms/master"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
-
   postgres:
     image: postgres:15
     environment:
@@ -148,3 +104,20 @@ services:
       interval: 30s
       timeout: 10s
       retries: 3
+  
+  keycloak:
+    image: quay.io/keycloak/keycloak:latest
+    environment:
+      - KEYCLOAK_USER=admin
+      - KEYCLOAK_PASSWORD=admin
+    ports:
+      - "8081:8080"
+    networks:
+      - super_services_network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/auth/realms/master"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  

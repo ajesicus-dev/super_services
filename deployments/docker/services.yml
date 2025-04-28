@@ -1,6 +1,35 @@
 version: '3.9'
 
 services:
+  gateway:
+    build:
+      context: ./cmd/gateway
+    ports:
+      - "8080:8080"
+    environment:
+      - JWT_SECRET=your_jwt_secret
+      - VAULT_ADDR=http://vault:8200  # <- Add Vault address if needed
+    depends_on:
+      vault: 
+        condition: service_healthy
+      auth:
+        condition: service_healthy
+      user:
+        condition: service_healthy
+      notification:
+        condition: service_healthy
+      billing:
+        condition: service_healthy
+      search:
+        condition: service_healthy
+    networks:
+      - super_services_network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
   auth:
     build:
       context: ./services/auth
@@ -14,11 +43,7 @@ services:
       - DATABASE_URL=postgres://user:password@postgres:5432/super_services?sslmode=disable
       - REDIS_URL=redis://redis:6379
     depends_on:
-      postgres:
-        condition: service_healthy
-      redis:
-        condition: service_healthy  
-      keycloak:
+      gateway::
         condition: service_healthy
     networks:
       - super_services_network
