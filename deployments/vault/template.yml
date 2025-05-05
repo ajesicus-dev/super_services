@@ -1,0 +1,35 @@
+networks:
+  super_services_network:
+    driver: bridge
+
+services:
+  vault-node-template:
+    image: hashicorp/vault:1.19
+    user: "100:100"
+    volumes:
+      - ./config/vault-config.hcl:/etc/vault.d/vault.hcl
+    command: server -config=/etc/vault.d/vault.hcl
+    cap_add:
+      - IPC_LOCK
+    networks:
+      - super_services_network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8200/v1/sys/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    deploy:
+      resources:
+        reservations:
+          cpus: '.25'
+          memory: 256M
+        limits:
+          cpus: '.50'
+          memory: 512M
+      restart_policy:
+        condition: on-failure
+        delay: 5s
+        max_attempts: 3
+        window: 120s
+      update_config:
+        order: stop-first

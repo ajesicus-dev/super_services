@@ -3,7 +3,7 @@
 set -e
 
 VAULT_ADDR="${VAULT_NODE1_ADDR:-http://vault-node1:8200}"
-INIT_OUTPUT_DIR="/vault"
+INIT_OUTPUT_DIR="/vault/files"
 ROOT_TOKEN_FILE="${INIT_OUTPUT_DIR}/root.token"
 
 wait_for_active_vault() {

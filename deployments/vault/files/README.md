@@ -1,0 +1,1 @@
+# for storing generated files by vault containers

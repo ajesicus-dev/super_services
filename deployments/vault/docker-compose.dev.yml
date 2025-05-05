@@ -1,0 +1,5 @@
+services:
+  vault-node1:
+    privileged: true
+  vault-node2:
+    privileged: true

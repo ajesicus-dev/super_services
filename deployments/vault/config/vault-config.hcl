@@ -1,3 +1,15 @@
+# Default cluster configuration
+cluster_name = "super_services_vault_cluster"
+
+# disable locking memory (no swap) for secrets.
+disable_mlock = true
+
+# Enable Vault's built-in UI
+ui = true
+
+# Log Level
+log_level = "info"
+
 # Storage: Raft (integrated storage for production-grade setups)
 storage "raft" {
   path    = "/vault/data"
@@ -18,18 +30,6 @@ listener "tcp" {
   cluster_address  = "0.0.0.0:8201"
   tls_disable = true  # Only for local development!
 }
-
-# Default cluster configuration
-cluster_name = "super_services_vault_cluster"
-
-# disable locking memory (no swap) for secrets.
-disable_mlock = true
-
-# Enable Vault's built-in UI
-ui = true
-
-# Log Level
-log_level = "info"
 
 # Telemetry: Prometheus metrics settings
 telemetry {

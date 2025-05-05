@@ -1,6 +1,6 @@
 #!/bin/sh
 
-. /deployments/vault/scripts/common.sh
+. /vault/scripts/common.sh
 
 if [ -z "$VAULT_ROOT_TOKEN" ]; then
   echo "Error: VAULT_ROOT_TOKEN not found!"

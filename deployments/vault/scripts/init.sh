@@ -1,6 +1,6 @@
 #!/bin/sh
 
-. /deployments/vault/scripts/common.sh
+. /vault/scripts/common.sh
 
 # Check if Vault is already initialized
 if vault_get "sys/init" | grep '"initialized":true'; then

@@ -1,6 +1,6 @@
 #!/bin/sh
 
-. /deployments/vault/scripts/common.sh
+. /vault/scripts/common.sh
 
 VAULT_NODE1_ADDR="${VAULT_NODE1_ADDR:-http://vault-node1:8200}"
 VAULT_NODE2_ADDR="${VAULT_NODE2_ADDR:-http://vault-node2:8200}"

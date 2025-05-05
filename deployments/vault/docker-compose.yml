@@ -3,54 +3,40 @@ volumes:
   vault-data-node1:
   vault-data-node2:
 
+networks:
+  super_services_network:
+    driver: bridge
+
 services:
   vault-node1:
-    image: hashicorp/vault:1.19
+    extends:
+      file: template.yml
+      service: vault-node-template
     container_name: vault-node1
     ports:
-      - "8200:8200"    # API port
-      - "8201:8201"    # Cluster (Raft) port
+      - "8300:8200"    # API port
+      - "8301:8201"    # Cluster (Raft) port
     environment:
       VAULT_API_ADDR: http://vault-node1:8200
       VAULT_CLUSTER_ADDR: http://vault-node1:8201
       VAULT_RAFT_NODE_ID: vault-node1
     volumes:
       - vault-data-node1:/vault/data
-      - ./deployments/vault/config:/vault/config
-    command: server -config=/vault/config/vault-config.hcl
-    cap_add:
-      - IPC_LOCK
-    networks:
-      - super_services_network
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8200/v1/sys/health"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
 
   vault-node2:
-    image: hashicorp/vault:1.19
+    extends:
+      file: template.yml
+      service: vault-node-template
     container_name: vault-node2
     ports:
-      - "8202:8200"    # API port
-      - "8203:8201"    # Cluster (Raft) port
+      - "8400:8200"    # API port
+      - "8401:8201"    # Cluster (Raft) port
     environment:
       VAULT_API_ADDR: http://vault-node2:8200
       VAULT_CLUSTER_ADDR: http://vault-node2:8201
       VAULT_RAFT_NODE_ID: vault-node2
     volumes:
       - vault-data-node2:/vault/data
-      - ./deployments/vault/config:/vault/config
-    command: server -config=/vault/config/vault-config.hcl
-    cap_add:
-      - IPC_LOCK
-    networks:
-      - super_services_network
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8200/v1/sys/health"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
     
   vault-init:
     image: curlimages/curl:latest
@@ -60,9 +46,10 @@ services:
     environment:
       - VAULT_NODE1_ADDR=http://vault-node1:8200
     volumes:
-      - ./deployments/vault/scripts:/scripts
-      - vault-init-data:/vault
-    entrypoint: ["/bin/sh", "/scripts/init.sh"]
+      - ./scripts:/vault/scripts
+      - ./files:/vault/files
+      - vault-init-data:/opt/vault/data
+    entrypoint: ["/bin/sh", "/vault/scripts/init.sh"]
     networks:
       - super_services_network
     restart: "no"
@@ -76,9 +63,10 @@ services:
       - VAULT_NODE1_ADDR=http://vault-node1:8200
       - VAULT_NODE2_ADDR=http://vault-node2:8200
     volumes:
-      - ./deployments/vault/scripts:/scripts
-      - vault-init-data:/vault
-    entrypoint: ["/bin/sh", "/scripts/unseal.sh"]
+      - ./scripts:/vault/scripts
+      - ./files:/vault/files
+      - vault-init-data:/opt/vault/data
+    entrypoint: ["/bin/sh", "/vault/scripts/unseal.sh"]
     networks:
       - super_services_network
     restart: "no"
@@ -93,9 +81,10 @@ services:
       # Optionally inject the token if you preload using it
       # - VAULT_ROOT_TOKEN=xxxxxx
     volumes:
-      - ./deployments/vault/scripts:/scripts
-      - vault-init-data:/vault
-    entrypoint: ["/bin/sh", "/scripts/preload.sh"]
+      - ./scripts:/vault/scripts
+      - ./files:/vault/files
+      - vault-init-data:/opt/vault/data
+    entrypoint: ["/bin/sh", "/vault/scripts/preload.sh"]
     networks:
       - super_services_network
     restart: "no"
