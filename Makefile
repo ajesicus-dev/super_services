@@ -7,12 +7,17 @@ COMPOSE_DIR=deployments/docker-compose
 COMPOSE_FILES=-f $(COMPOSE_DIR)/common.yml -f $(COMPOSE_DIR)/vault.yml  -f $(COMPOSE_DIR)/stack.yml -f $(COMPOSE_DIR)/services.yml
 VAULT_COMPOSE_FILES=-f deployments/vault/docker-compose.yml -f deployments/vault/docker-compose.dev.yml
 
-.PHONY: build run-gateway run-auth test lint up down restart logs clean \
+.PHONY: build build-cli run-gateway run-auth test lint up down restart logs clean \
         vault-up vault-log vault-down vault-status vault-init vault-unseal vault-login vault-put vault-get vault-root-token vault-secrets
 
 # Build all Go binaries
 build:
 	go build ./...
+
+# build specificity: cli
+build-cli:
+	go build -o ./bin/cli ./cmd/cli
+	chmod +x ./bin/cli
 
 # Run specific services
 run-gateway:
