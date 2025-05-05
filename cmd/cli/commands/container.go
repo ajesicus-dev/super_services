@@ -3,7 +3,6 @@ package commands
 import (
 	"fmt"
 	"os"
-	"os/exec"
 
 	"github.com/spf13/cobra"
 )
@@ -40,15 +39,4 @@ func init() {
 	rootCmd.AddCommand(containerCmd)
 	containerCmd.Flags().BoolVar(&upFlag, "up", false, "Start the container")
 	containerCmd.Flags().BoolVar(&downFlag, "down", false, "Stop the container")
-}
-
-func run(name string, args ...string) {
-	cmd := exec.Command(name, args...)
-	cmd.Stdout = os.Stdout
-	cmd.Stderr = os.Stderr
-	cmd.Stdin = os.Stdin
-
-	if err := cmd.Run(); err != nil {
-		fmt.Fprintln(os.Stderr, "Error:", err)
-	}
 }
