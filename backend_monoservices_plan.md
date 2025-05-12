@@ -148,6 +148,12 @@ super_services/
 
 ### **2. Infrastructure Setup**
 
+#### containers
+- Kubernetes
+- containerd
+- K3s, a local kubernetes
+- K6, a stress test
+
 #### Docker Compose Setup
 - **Keycloak**: Identity provider with realm `mono-services`.
 - **Gateway**: Public entry point, secured with JWT middleware.
